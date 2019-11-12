@@ -7,6 +7,7 @@ from pathlib import Path
 import os
 import spacy
 import nltk
+
 from nltk.corpus import stopwords
 
 nltk.download('stopwords')
@@ -58,6 +59,9 @@ def lemmatization(texts, allowed_postags=['NOUN', 'ADJ', 'VERB', 'ADV']):
         doc = nlp(" ".join(sent)) 
         texts_out.append([token.lemma_ for token in doc if token.pos_ in allowed_postags])
     return texts_out
+
+def savetopics(topics):
+
 
 
 if __name__ == '__main__':
