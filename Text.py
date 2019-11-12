@@ -17,7 +17,7 @@ from nltk.stem.wordnet import WordNetLemmatizer
 import re
 import string
 from pathlib import Path
-
+from nltk import ngrams
 import Db
 
 nltk.download('punkt')
@@ -52,12 +52,13 @@ def create_lemmas_from_file(datafile, encoding='latin-1'):
     
     # Tokenize
     # need to run commented line the first time you do this
-    tokens = word_tokenize(text)
-
+    bigrams = getbigram(text)
+    tokens = word_tokenize(text) 
+    
     # Remove stopwords
     stop_words = set(stopwords.words('english'))
     stop_lambda = lambda x: [y for y in x if y not in stop_words]
-    tokens = stop_lambda(tokens)
+    tokens = stop_lambda(tokens + bigrams) 
 
     #Part of Speech
     # need to run commented line the first time you do this
@@ -93,7 +94,11 @@ def identify_topics(data_files, num_topics=5, no_below=3, no_above=.34, passes=5
                                              id2word = dictionary, 
                                              passes = passes)
     return(lda_model_tfidf, dictionary)
-    
+
+def getbigram(data):
+    bigrams = list(ngrams(data.split(), 2))
+    return [ '%s_%s' % (b[0], b[1]) for b in bigrams]
+
 def fit_new_doc(docfile, lda_model, dictionary):
     lemmas = create_lemmas_from_file(docfile)
     bow_corpus = dictionary.doc2bow(lemmas) 
