@@ -40,8 +40,6 @@ def get_wordnet_pos(treebank_tag):
     
 def create_lemmas_from_file(datafile, encoding='latin-1'):
 
-    #print(datafile.name)
-
     with open(datafile, 'rt', encoding=encoding) as f:
         text = f.read()
     
@@ -121,8 +119,9 @@ if __name__ == '__main__':
         print("Word: {} ".format(topic))
         print("\n")
         writeToDb(topic)
-
-    #print('Test file likely to be topic {}, probability = {:.4f}'.format(topic_prediction[0][0], topic_prediction[0][1]))
+        
+    for tp in topic_prediction:
+        print('Test file likely to be topic {}, probability = {:.4f}'.format(tp[0][0], tp[0][1]))
     
     
 
