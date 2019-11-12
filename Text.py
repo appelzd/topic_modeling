@@ -81,8 +81,8 @@ def identify_topics(data_files, num_topics=5, no_below=3, no_above=.34, passes=5
     
     #create and filter dictionary
     dictionary = gensim.corpora.Dictionary(lemmas)
-    #dictionary.filter_extremes(no_below=no_below, 
-     #                           no_above=no_above)
+    dictionary.filter_extremes(no_below=no_below, 
+                               no_above=no_above)
     
     #Use dictionary to form bag of words
     bow_corpus = [dictionary.doc2bow(doc) for doc in lemmas]
@@ -102,23 +102,30 @@ def fit_new_doc(docfile, lda_model, dictionary):
     topic_prediction = lda_model.get_document_topics(bow_corpus)
     return(topic_prediction)
     
+def writeToDb(topic):
+    db = Db.Db()
+    tmp = topic.split('+')
+    
+    for t in tmp:
+        a = t.split('"') 
+        db.write(a[0][:-1],a[1])
+
 
 if __name__ == '__main__':
     
     #hard-coded so examples can be easily swapped
-    directory = r'C:\datafiles\exforge_008\d'
+    directory = r'C:\datafiles\exforge_008\test'
     
     datafiles = [os.path.join(directory, file.name) for file in Path(directory).iterdir()]
-    lda_model, dictionary = identify_topics(datafiles, num_topics=4, no_above=.75, no_below=3)
+    lda_model, dictionary = identify_topics(datafiles, num_topics=10, no_above=.75, no_below=3)
     
     topic_prediction = [fit_new_doc(file, lda_model, dictionary) for file in datafiles]
-    db = Db.Db()
-
+    
     for idx, topic in lda_model.print_topics(-1):
         print("Topic: {} ".format(idx))
         print("Word: {} ".format(topic))
         print("\n")
-        db.write(topic)
+        writeToDb(topic)
 
     #print('Test file likely to be topic {}, probability = {:.4f}'.format(topic_prediction[0][0], topic_prediction[0][1]))
     
