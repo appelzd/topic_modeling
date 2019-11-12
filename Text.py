@@ -79,8 +79,8 @@ def identify_topics(data_files, num_topics=5, no_below=3, no_above=.34, passes=5
     
     #create and filter dictionary
     dictionary = gensim.corpora.Dictionary(lemmas)
-    # dictionary.filter_extremes(no_below=no_below, 
-    #                             no_above=no_above)
+    dictionary.filter_extremes(no_below=no_below, 
+                                no_above=no_above)
     
     #Use dictionary to form bag of words
     bow_corpus = [dictionary.doc2bow(doc) for doc in lemmas]
@@ -104,19 +104,9 @@ def fit_new_doc(docfile, lda_model, dictionary):
 if __name__ == '__main__':
     
     #hard-coded so examples can be easily swapped
-    directory = r'C:\datafiles\exforge_008\d'
-    
-    # files =  [
-    #         'PAR-000089895.txt',
-    #         'PAR-000089949.txt',
-    #         'PAR-000102231.txt'
-    #         ]
-    
-    
-    #testfile = os.path.join(directory,'PAR-000098184.txt')
+    directory = r'C:\datafiles\exforge_008\0008'
     
     datafiles = [os.path.join(directory, file.name) for file in Path(directory).iterdir()]
-    #datafiles = [os.path.join(directory, file) for file in files]
     lda_model, dictionary = identify_topics(datafiles, num_topics=4, no_above=.75, no_below=3)
     
     topic_prediction = [fit_new_doc(file, lda_model, dictionary) for file in datafiles]
