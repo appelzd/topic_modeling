@@ -1,23 +1,19 @@
 import os, uuid
 from azure.storage.blob import BlockBlobService, PublicAccess
 
+from config import Configuration
+
 class BlobRepo:
 
     def GetBlobs(self):
         try:
-            block_blob_service = BlockBlobService(account_name='topicmodeling7885000326', account_key='XcdfPfvBQVgt0g+h3voFQ7ySystcnrJTsEQc73clWmsWuSzFFw6b5v89pO6idc7JyyUlefvC6bIV9QABluMBhA==')
-            blobs = block_blob_service.list_blobs(self.GetContainerName())
+            block_blob_service = BlockBlobService(account_name=Configuration.GetAzureBlobAccountName(), account_key=Configuration.GetAzureBlobKey())
+            blobs = block_blob_service.list_blobs(Configuration.GetBlobContainerName())
 
             for b in blobs:
                 print(b.name)
-                bt = block_blob_service.get_blob_to_text(self.GetContainerName(), b.name)
+                bt = block_blob_service.get_blob_to_text(Configuration.GetBlobContainerName(), b.name)
                 yield bt.content
 
         except Exception as e:
             print(e)
-
-    def GetContainerName():
-        return 'chaucer'
-
-# if  __name__ == "__main__":
-#    GetBlobs()  
