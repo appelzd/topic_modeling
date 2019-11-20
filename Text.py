@@ -18,7 +18,14 @@ import re
 import string
 from pathlib import Path
 from nltk import ngrams
+import gensim.models.keyedvectors as word2vec
+
+# our classes
+import BlobRepo
 import Db
+
+#!wget "https://s3.amazonaws.com/dl4j-distribution/GoogleNews-vectors-negative300.bin.gz"
+#model=word2vec.KeyedVectors.load_word2vec_format('GoogleNews-vectors-negative300.bin.gz', binary=True)  
 
 nltk.download('punkt')
 nltk.download('stopwords')
@@ -52,7 +59,7 @@ def create_lemmas_from_file(datafile, encoding='latin-1'):
     
     # Tokenize
     # need to run commented line the first time you do this
-    bigrams = getbigram(text)
+    #bigrams = getbigram(text)
     tokens = word_tokenize(text) 
     
     # Remove stopwords
@@ -96,8 +103,10 @@ def identify_topics(data_files, num_topics=5, no_below=3, no_above=.34, passes=5
     return(lda_model_tfidf, dictionary)
 
 def getbigram(data):
+    i2w = model.wv.index2word
     bigrams = list(ngrams(data.split(), 2))
-    return [ '%s_%s' % (b[0], b[1]) for b in bigrams]
+    bg = [ '%s_%s' % (b[0], b[1]) for b in bigrams]
+    return [word for word in i2w for w in bg if word.lower()==w]
 
 def fit_new_doc(docfile, lda_model, dictionary):
     lemmas = create_lemmas_from_file(docfile)
