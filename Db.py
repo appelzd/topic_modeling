@@ -1,14 +1,15 @@
 
 import pandas
 import pyodbc
-
+from config import Configuration
 
 
 class Db:
 
     def writeTopics(self, topic):
-        sql_con = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};Server=tcp:csdev.database.windows.net,1433;Database=anvesademo20_Copy20191003;Trusted_Connection=no;UID=csadmin;Pwd=c$admin14500')
+        #sql_con = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};Server=tcp:csdev.database.windows.net,1433;Database=anvesademo20_Copy20191003;Trusted_Connection=no;UID=csadmin;Pwd=c$admin14500')
 
+        sql_con = pyodbc.connect(Configuration.GetDbConnectionString())
         tmp = topic.split('+')
         
             
@@ -28,7 +29,7 @@ class Db:
         sql_con.close()
 
     def writeFilePrediction(self, filename, likelyhood, topicId):
-        sql_con = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};Server=tcp:csdev.database.windows.net,1433;Database=anvesademo20_Copy20191003;Trusted_Connection=no;UID=csadmin;Pwd=c$admin14500')
+        sql_con = pyodbc.connect(Configuration.GetDbConnectionString())
 
         cursor = sql_con.cursor()
      
