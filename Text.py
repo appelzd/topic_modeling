@@ -47,7 +47,6 @@ def get_wordnet_pos(treebank_tag):
     
 def create_lemmas_from_file(text, encoding='latin-1'):
 
-    try:
         #Normalize
         text = text.lower()
       
@@ -76,16 +75,19 @@ def create_lemmas_from_file(text, encoding='latin-1'):
         lemmas = [lemmatizer_fun(x) for x in speech_parts]
         
         return(lemmas)
-    except Exception as e:
-        print(e)
-        return 
         
 
 def identify_topics(num_topics=5, no_below=3, no_above=.34, passes=50):
     #create topics based on lemma lists created from whole files
     
-    lemmas = [create_lemmas_from_file(datafile) for datafile in blobRepo.BlobRepo.GetBlobs(blobRepo.BlobRepo)]
-    
+    lemmas = []
+    for datafile in blobRepo.BlobRepo.GetBlobs(blobRepo.BlobRepo):
+        try:
+            lemmas.append(create_lemmas_from_file(datafile))                
+        except Exception as e :
+            print(e)
+            continue
+
     #create and filter dictionary
     dictionary = gensim.corpora.Dictionary(lemmas)
     dictionary.filter_extremes(no_below=no_below, 
