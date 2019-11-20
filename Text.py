@@ -21,7 +21,7 @@ from nltk import ngrams
 import gensim.models.keyedvectors as word2vec
 
 # our classes
-import BlobRepo
+import blobRepo
 import Db
 
 #!wget "https://s3.amazonaws.com/dl4j-distribution/GoogleNews-vectors-negative300.bin.gz"
@@ -45,11 +45,8 @@ def get_wordnet_pos(treebank_tag):
     else:
         return wordnet.NOUN
     
-def create_lemmas_from_file(datafile, encoding='latin-1'):
+def create_lemmas_from_file(text, encoding='latin-1'):
 
-    with open(datafile, 'rt', encoding=encoding) as f:
-        text = f.read()
-    
     #Normalize
     text = text.lower()
 
@@ -80,10 +77,10 @@ def create_lemmas_from_file(datafile, encoding='latin-1'):
     
     return(lemmas)
     
-def identify_topics(data_files, num_topics=5, no_below=3, no_above=.34, passes=50):
+def identify_topics(num_topics=5, no_below=3, no_above=.34, passes=50):
     #create topics based on lemma lists created from whole files
     
-    lemmas = [create_lemmas_from_file(datafile) for datafile in datafiles]
+    lemmas = [create_lemmas_from_file(datafile) for datafile in blobRepo.BlobRepo.GetBlobs(blobRepo.BlobRepo)]
     
     #create and filter dictionary
     dictionary = gensim.corpora.Dictionary(lemmas)
@@ -124,7 +121,7 @@ if __name__ == '__main__':
     directory = r'C:\datafiles\exforge_008\d'
     
     datafiles = [os.path.join(directory, file.name) for file in Path(directory).iterdir()]
-    lda_model, dictionary = identify_topics(datafiles, num_topics=10, no_above=.75, no_below=3)
+    lda_model, dictionary = identify_topics(num_topics=10, no_above=.75, no_below=3)
     
     topic_prediction = [fit_new_doc(file, lda_model, dictionary) for file in datafiles]
     
