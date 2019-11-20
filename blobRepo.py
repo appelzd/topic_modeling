@@ -9,6 +9,7 @@ class BlobRepo:
             blobs = block_blob_service.list_blobs(self.GetContainerName())
 
             for b in blobs:
+                print(b.name)
                 bt = block_blob_service.get_blob_to_text(self.GetContainerName(), b.name)
                 yield bt.content
 

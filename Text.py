@@ -47,36 +47,40 @@ def get_wordnet_pos(treebank_tag):
     
 def create_lemmas_from_file(text, encoding='latin-1'):
 
-    #Normalize
-    text = text.lower()
+    try:
+        #Normalize
+        text = text.lower()
+      
+        #Strip punctuation
+        text = text.replace("'",'').replace("\n",' ')
+        text = re.sub('[%s]' % re.escape(string.punctuation  + '£' + 'ï' + '»' + '¿'), ' ', text)
+        
+        # Tokenize
+        # need to run commented line the first time you do this
+        tokens = word_tokenize(text) 
+        
+        # Remove stopwords
+        stop_words = set(stopwords.words('english'))
+        stop_lambda = lambda x: [y for y in x if y not in stop_words]
+        tokens = stop_lambda(tokens ) 
 
-    #Strip punctuation
-    text = text.replace("'",'').replace("\n",' ')
-    text = re.sub('[%s]' % re.escape(string.punctuation  + '£' + 'ï' + '»' + '¿'), ' ', text)
-    
-    # Tokenize
-    # need to run commented line the first time you do this
-    #bigrams = getbigram(text)
-    tokens = word_tokenize(text) 
-    
-    # Remove stopwords
-    stop_words = set(stopwords.words('english'))
-    stop_lambda = lambda x: [y for y in x if y not in stop_words]
-    tokens = stop_lambda(tokens + bigrams) 
+        #Part of Speech
+        # need to run commented line the first time you do this
+        pos_lambda = lambda x: nltk.pos_tag(x)
+        pos_wordnet = lambda x: [(y[0], get_wordnet_pos(y[1])) for y in x]
+        speech_parts = pos_wordnet(pos_lambda(tokens))
+        
+        #Lemmatization
+        lemmatizer = WordNetLemmatizer()
+        lemmatizer_fun = lambda x: lemmatizer.lemmatize(*x)
+        lemmas = [lemmatizer_fun(x) for x in speech_parts]
+        
+        return(lemmas)
+    except Exception as e:
+        print(e)
+        return 
+        
 
-    #Part of Speech
-    # need to run commented line the first time you do this
-    pos_lambda = lambda x: nltk.pos_tag(x)
-    pos_wordnet = lambda x: [(y[0], get_wordnet_pos(y[1])) for y in x]
-    speech_parts = pos_wordnet(pos_lambda(tokens))
-    
-    #Lemmatization
-    lemmatizer = WordNetLemmatizer()
-    lemmatizer_fun = lambda x: lemmatizer.lemmatize(*x)
-    lemmas = [lemmatizer_fun(x) for x in speech_parts]
-    
-    return(lemmas)
-    
 def identify_topics(num_topics=5, no_below=3, no_above=.34, passes=50):
     #create topics based on lemma lists created from whole files
     
@@ -84,8 +88,8 @@ def identify_topics(num_topics=5, no_below=3, no_above=.34, passes=50):
     
     #create and filter dictionary
     dictionary = gensim.corpora.Dictionary(lemmas)
-    # dictionary.filter_extremes(no_below=no_below, 
-    #                            no_above=no_above)
+    dictionary.filter_extremes(no_below=no_below, 
+                               no_above=no_above)
     
     #Use dictionary to form bag of words
     bow_corpus = [dictionary.doc2bow(doc) for doc in lemmas]
@@ -118,12 +122,12 @@ def writeToDb(topic):
 if __name__ == '__main__':
     
     #hard-coded so examples can be easily swapped
-    directory = r'C:\datafiles\exforge_008\d'
+    # directory = r'C:\datafiles\exforge_008\d'
     
-    datafiles = [os.path.join(directory, file.name) for file in Path(directory).iterdir()]
+    # datafiles = [os.path.join(directory, file.name) for file in Path(directory).iterdir()]
     lda_model, dictionary = identify_topics(num_topics=10, no_above=.75, no_below=3)
     
-    topic_prediction = [fit_new_doc(file, lda_model, dictionary) for file in datafiles]
+    #topic_prediction = [fit_new_doc(file, lda_model, dictionary) for file in datafiles]
     
     for idx, topic in lda_model.print_topics(-1):
         print("Topic: {} ".format(idx))
@@ -131,8 +135,8 @@ if __name__ == '__main__':
         print("\n")
         writeToDb(topic)
         
-    for tp in topic_prediction:
-        print('Test file likely to be topic {}, probability = {:.4f}'.format(tp[0][0], tp[0][1]))
+    # for tp in topic_prediction:
+    #     print('Test file likely to be topic {}, probability = {:.4f}'.format(tp[0][0], tp[0][1]))
     
     
 
