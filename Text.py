@@ -19,6 +19,7 @@ import string
 from pathlib import Path
 from nltk import ngrams
 import gensim.models.keyedvectors as word2vec
+import spacy
 
 # our classes
 import blobRepo
@@ -31,7 +32,9 @@ nltk.download('punkt')
 nltk.download('stopwords')
 nltk.download('averaged_perceptron_tagger')
 nltk.download('wordnet')
-    
+
+nlp = spacy.load('en_core_web_lg')    
+
 def get_wordnet_pos(treebank_tag):
     # Convert the naming scheme to that recognized by WordNet
     if treebank_tag.startswith('J'):
@@ -99,10 +102,11 @@ def identify_topics(num_topics=5, no_below=3, no_above=.34, passes=50):
     #Fit tfidf model
     tfidf = gensim.models.TfidfModel(bow_corpus)
     corpus_tfidf = tfidf[bow_corpus]
-    lda_model_tfidf = gensim.models.LdaModel(corpus_tfidf, 
-                                             num_topics=num_topics, 
-                                             id2word = dictionary, 
-                                             passes = passes)
+    lda_model_tfidf = gensim.models.LsiModel(corpus_tfidf, 
+                                             #num_topics=num_topics, 
+                                             id2word = dictionary 
+                                             #passes = passes
+                                             )
     return(lda_model_tfidf, dictionary)
 
 def getbigram(data):
@@ -127,7 +131,7 @@ if __name__ == '__main__':
     # directory = r'C:\datafiles\exforge_008\d'
     
     # datafiles = [os.path.join(directory, file.name) for file in Path(directory).iterdir()]
-    lda_model, dictionary = identify_topics(num_topics=10, no_above=.75, no_below=3)
+    lda_model, dictionary = identify_topics(num_topics=20, no_above=.95, no_below=.25)
     
     #topic_prediction = [fit_new_doc(file, lda_model, dictionary) for file in datafiles]
     

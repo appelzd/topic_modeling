@@ -1,7 +1,8 @@
 class Configuration:
     @staticmethod
     def GetBlobContainerName():
-        return 'chaucer'
+        #return 'chaucer'
+        return 'exforge'
     
     @staticmethod
     def GetDbConnectionString():
