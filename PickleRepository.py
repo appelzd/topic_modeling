@@ -4,7 +4,7 @@ from config import Configuration
 
 class PickleRepo:
 
-    def SaveAsPickle(self, document, target=None):
+    def SaveAsPickle(self, document, documentId, target=None):
         path = self.GetPath(target)
     
         #create non-exisitng path
@@ -12,13 +12,13 @@ class PickleRepo:
             os.makedirs(path)
 
         # Make sure that the parent is a directory and not a file
-        if not os.path.isdir(parent):
+        if not os.path.isdir(path):
             raise ValueError(
                 "Please supply a directory to write preprocessed data to."
             )
         
         try:
-            with open(path, 'wb') as f:
+            with open(os.path.join(path, str(documentId)), 'wb') as f:
                 pickle.dump(document, f, pickle.HIGHEST_PROTOCOL)
         except Exception as e:
             print('exception pickling doc')
@@ -32,10 +32,10 @@ class PickleRepo:
             pickle.load(f)
 
 
-    def GetPath(target=None):
+    def GetPath(self,target=None):
         if target == None:
             path = Configuration.GetPickleRoot()
-        elif
+        else:
             path = target
     
         return path
