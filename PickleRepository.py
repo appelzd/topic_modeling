@@ -5,10 +5,7 @@ from config import Configuration
 class PickleRepo:
 
     def SaveAsPickle(self, document, target=None):
-        if target == None:
-            path = Configuration.GetPickleRoot()
-        elif
-            path = target
+        path = self.GetPath(target)
     
         #create non-exisitng path
         if not os.path.exists(path):
@@ -19,7 +16,7 @@ class PickleRepo:
             raise ValueError(
                 "Please supply a directory to write preprocessed data to."
             )
-
+        
         try:
             with open(path, 'wb') as f:
                 pickle.dump(document, f, pickle.HIGHEST_PROTOCOL)
@@ -28,3 +25,17 @@ class PickleRepo:
             print(e)
 
     
+    def GetPickledDoc(self, documentName, target=None):
+        path = self.GetPath(target)
+
+        with open(path, 'rb') as f:
+            pickle.load(f)
+
+
+    def GetPath(target=None):
+        if target == None:
+            path = Configuration.GetPickleRoot()
+        elif
+            path = target
+    
+        return path
