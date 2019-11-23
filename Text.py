@@ -11,7 +11,7 @@ import gensim
 import os
 import nltk
 from nltk.corpus import stopwords
-from nltk.tokenize import word_tokenize
+from nltk.tokenize import word_tokenize, sent_tokenize
 from nltk.corpus import wordnet
 from nltk.stem.wordnet import WordNetLemmatizer
 import re
@@ -19,21 +19,20 @@ import string
 from pathlib import Path
 from nltk import ngrams
 import gensim.models.keyedvectors as word2vec
-import spacy
 
 # our classes
 import blobRepo
 import Db
 
 #!wget "https://s3.amazonaws.com/dl4j-distribution/GoogleNews-vectors-negative300.bin.gz"
-#model=word2vec.KeyedVectors.load_word2vec_format('GoogleNews-vectors-negative300.bin.gz', binary=True)  
+model=word2vec.KeyedVectors.load_word2vec_format('GoogleNews-vectors-negative300.bin.gz', binary=True)  
+i2w = model.wv.index2word
 
 nltk.download('punkt')
 nltk.download('stopwords')
 nltk.download('averaged_perceptron_tagger')
 nltk.download('wordnet')
 
-nlp = spacy.load('en_core_web_lg')    
 
 def get_wordnet_pos(treebank_tag):
     # Convert the naming scheme to that recognized by WordNet
@@ -59,11 +58,12 @@ def create_lemmas_from_file(text, encoding='latin-1'):
         
         # Tokenize
         # need to run commented line the first time you do this
-        tokens = word_tokenize(text) 
-        
+        tokens = word_tokenize(text)
+        tokens.append(getngrams(text))
+
         # Remove stopwords
         stop_words = set(stopwords.words('english'))
-        stop_lambda = lambda x: [y for y in x if y not in stop_words]
+        stop_lambda = lambda x: [y for y in x if not y.isdigit() and y not in stop_words]
         tokens = stop_lambda(tokens ) 
 
         #Part of Speech
@@ -93,6 +93,7 @@ def identify_topics(num_topics=5, no_below=3, no_above=.34, passes=50):
 
     #create and filter dictionary
     dictionary = gensim.corpora.Dictionary(lemmas)
+    #dictionary.append(getbigram(lemmas))
     dictionary.filter_extremes(no_below=no_below, 
                                no_above=no_above)
     
@@ -109,11 +110,22 @@ def identify_topics(num_topics=5, no_below=3, no_above=.34, passes=50):
                                              )
     return(lda_model_tfidf, dictionary)
 
-def getbigram(data):
-    i2w = model.wv.index2word
-    bigrams = list(ngrams(data.split(), 2))
-    bg = [ '%s_%s' % (b[0], b[1]) for b in bigrams]
-    return [word for word in i2w for w in bg if word.lower()==w]
+def getngrams(data):
+    #for now, we are just getting bigrams (2 word phrases)
+    #get sentences
+    sentences = sent_tokenize(data)[0].split('\r')
+    #foreach sentence, create bigram matrix with nltk.ngram
+    ngramslist = []
+    [ngramslist.append(ngrams(bi.lower().split(), 2)) for bi in sentences]
+
+    #foreach bigram in bigram matrix
+    #compare to our model to see if the biagram is a 'valid' phrase
+    #if the phrase is valid, add it to the dictionary of terms
+    for gen in ngramslist:
+        bg = [ '%s_%s' % (b[0], b[1]) for b in gen]
+            
+    [word for word in i2w for w in bg if word.lower()==w]
+  
 
 def fit_new_doc(docfile, lda_model, dictionary):
     lemmas = create_lemmas_from_file(docfile)
@@ -127,10 +139,6 @@ def writeToDb(topic):
     
 if __name__ == '__main__':
     
-    #hard-coded so examples can be easily swapped
-    # directory = r'C:\datafiles\exforge_008\d'
-    
-    # datafiles = [os.path.join(directory, file.name) for file in Path(directory).iterdir()]
     lda_model, dictionary = identify_topics(num_topics=20, no_above=.95, no_below=.25)
     
     #topic_prediction = [fit_new_doc(file, lda_model, dictionary) for file in datafiles]
