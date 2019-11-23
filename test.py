@@ -27,10 +27,12 @@ if __name__ == '__main__':
     ngramslist = []
     [ngramslist.append(ngrams(bi.lower().split(), 2)) for bi in sentences]
 
+    rtn = []
     for gen in ngramslist:
         bg = [ '%s_%s' % (b[0], b[1]) for b in gen]
-            
-        [print(word) for word in i2w for w in bg if word.lower()==w]
+        rtn.append([word) for word in i2w for w in bg if word.lower()==w]])    
+
+    f = rtn
 
     
 

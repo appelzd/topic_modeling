@@ -16,4 +16,9 @@ class Configuration:
     @staticmethod
     def GetAzureBlobKey():
         return 'XcdfPfvBQVgt0g+h3voFQ7ySystcnrJTsEQc73clWmsWuSzFFw6b5v89pO6idc7JyyUlefvC6bIV9QABluMBhA=='
+
+    @staticmethod
+    def GetPickleRoot():
+        return ''
+
     
