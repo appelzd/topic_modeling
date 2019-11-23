@@ -25,11 +25,11 @@ class PickleRepo:
             print(e)
 
     
-    def GetPickledDoc(self, documentName, target=None):
+    def GetPickledDoc(self, documentId, target=None):
         path = self.GetPath(target)
 
-        with open(path, 'rb') as f:
-            pickle.load(f)
+        with open(os.path.join(path, str(documentId)), 'rb') as f:
+            return pickle.load(f)
 
 
     def GetPath(self,target=None):

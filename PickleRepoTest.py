@@ -17,10 +17,11 @@ class TestPickleRepo(unittest.TestCase):
         except Exception as e:
             self.assertIsNone(e)
 
-    # def test_getPickle(self):
-    #     repo = PickleRepo()
-    #     doc = repo.GetPickledDoc('testDoc', target)
-    #     self.assertTrue(doc != None)
+    def test_getPickle(self):
+        repo = PickleRepo()
+        doc = repo.GetPickledDoc(self.documentId, self.target)
+        self.assertTrue(doc != None)
+        self.assertEqual(doc, self.testDoc)
 
 if __name__ == "__main__":
     unittest.main()
