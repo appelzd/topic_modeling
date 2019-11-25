@@ -13,8 +13,7 @@ class PreprocessorTest(unittest.TestCase):
     def test_getPartofSpeechTagging_returnsNoun(self):
         tagged = nltk.pos_tag(self.text.split()) 
 
-        result = PlainTextPreprocessor.get_wordnet_pos(PlainTextPreprocessor, tagged[8][1])
-        
+        result = PlainTextPreprocessor.get_wordnet_pos(PlainTextPreprocessor, tagged[8][1])      
 
         self.assertEqual(wordnet.NOUN, result)
 
@@ -33,8 +32,14 @@ class PreprocessorTest(unittest.TestCase):
         self.assertEqual(None, result)
 
     def test_gettokens_returnstokenlistwithoutpunc(self):
-        results = PlainTextPreprocessor.gettokens(PlainTextPreprocessor, self.text)
+        results = PlainTextPreprocessor.getTokens(PlainTextPreprocessor, self.text)
         self.assertNotIn(['.', ','], results, 'contains punctuation')
+
+    def test_removestopwords_returnstokenlistwithoutstopwords(self):
+        tokens = PlainTextPreprocessor.getTokens(PlainTextPreprocessor, self.text)
+        results = PlainTextPreprocessor.removeStopWords(PlainTextPreprocessor, tokens)
+        self.assertNotIn(['and', 'a'], results, 'contains stopwords')
+    
 
     # bigrams is not working right now
     # def test_getbigramlist_returnslistinproperformat(self):

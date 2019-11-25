@@ -35,7 +35,7 @@ class PlainTextPreprocessor:
             return None
     
 
-    def gettokens(self, text):
+    def getTokens(self, text):
         #Normalize
         text = text.lower()
       
@@ -49,27 +49,25 @@ class PlainTextPreprocessor:
         #tokens.append(self.getngrams(text))
         return tokens
 
-    # def create_lemmas_from_file(self, text, encoding='latin-1'):
+    def removeStopWords(self, tokens):
+        # Remove stopwords
+        stop_words = set(stopwords.words('english'))
+        stop_lambda = lambda x: [y for y in x if not y.isdigit() and y not in stop_words]
+        return stop_lambda(tokens ) 
 
-  
+    def getPartsofSpeech(self, tokens):
+        #Part of Speech
+        pos_lambda = lambda x: nltk.pos_tag(x)
+        pos_wordnet = lambda x: [(y[0], get_wordnet_pos(y[1])) for y in x]
+        return pos_wordnet(pos_lambda(tokens))
 
-    #     # Remove stopwords
-    #     stop_words = set(stopwords.words('english'))
-    #     stop_lambda = lambda x: [y for y in x if not y.isdigit() and y not in stop_words]
-    #     tokens = stop_lambda(tokens ) 
-
-    #     #Part of Speech
-    #     # need to run commented line the first time you do this
-    #     pos_lambda = lambda x: nltk.pos_tag(x)
-    #     pos_wordnet = lambda x: [(y[0], get_wordnet_pos(self,y[1])) for y in x if get_wordnet_pos(self,y[1]) not None]
-    #     speech_parts = pos_wordnet(pos_lambda(tokens))
+    def getLemmas(self, speech_parts):        
+        #Lemmatization
+        lemmatizer = WordNetLemmatizer()
+        lemmatizer_fun = lambda x: lemmatizer.lemmatize(*x)
+        lemmas = [lemmatizer_fun(x) for x in speech_parts]
         
-    #     #Lemmatization
-    #     lemmatizer = WordNetLemmatizer()
-    #     lemmatizer_fun = lambda x: lemmatizer.lemmatize(*x)
-    #     lemmas = [lemmatizer_fun(x) for x in speech_parts]
-        
-    #     return(lemmas)
+        return(lemmas)
 
     def getbigramlist(self,data):
         #for now, we are just getting bigrams (2 word phrases)
