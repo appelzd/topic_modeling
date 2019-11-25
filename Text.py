@@ -16,7 +16,7 @@ from nltk.corpus import wordnet
 from nltk.stem.wordnet import WordNetLemmatizer
 import re
 import string
-from nltk import ngrams
+
 import gensim.models.keyedvectors as word2vec
 
 # our classes
@@ -25,8 +25,8 @@ import Db
 from PreprocessText import PlainTextPreprocessor
 
 #!wget "https://s3.amazonaws.com/dl4j-distribution/GoogleNews-vectors-negative300.bin.gz"
-model=word2vec.KeyedVectors.load_word2vec_format('GoogleNews-vectors-negative300.bin.gz', binary=True)  
-i2w = model.wv.index2word
+# model=word2vec.KeyedVectors.load_word2vec_format('GoogleNews-vectors-negative300.bin.gz', binary=True)  
+# i2w = model.wv.index2word
         
 
 def identify_topics(num_topics=5, no_below=3, no_above=.34, passes=50):
