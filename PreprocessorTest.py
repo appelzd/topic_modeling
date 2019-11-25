@@ -31,6 +31,29 @@ class PreprocessorTest(unittest.TestCase):
 
         self.assertEqual(None, result)
 
+
+    def test_getPartsofSpeech_returnsNoun(self):
+        tokens = ['desk'] 
+
+        result = PlainTextPreprocessor.getPartsofSpeech(PlainTextPreprocessor, tokens)      
+
+        self.assertEqual(wordnet.NOUN, result[0][1])
+
+    def test_getPartsofSpeech_returnsVerb(self):
+        tokens = ['swimming']
+
+        result = PlainTextPreprocessor.getPartsofSpeech(PlainTextPreprocessor, tokens)
+
+        self.assertEqual(wordnet.VERB, result[0][1])
+
+    def test_getPartsofSpeech_returnsNone(self):
+        tokens = ['we']
+
+        result = PlainTextPreprocessor.getPartsofSpeech(PlainTextPreprocessor, tokens)
+
+        self.assertEqual(None, result[0][1])
+
+
     def test_gettokens_returnstokenlistwithoutpunc(self):
         results = PlainTextPreprocessor.getTokens(PlainTextPreprocessor, self.text)
         self.assertNotIn(['.', ','], results, 'contains punctuation')

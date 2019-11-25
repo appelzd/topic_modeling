@@ -58,7 +58,7 @@ class PlainTextPreprocessor:
     def getPartsofSpeech(self, tokens):
         #Part of Speech
         pos_lambda = lambda x: nltk.pos_tag(x)
-        pos_wordnet = lambda x: [(y[0], get_wordnet_pos(y[1])) for y in x]
+        pos_wordnet = lambda x: [(y[0], self.get_wordnet_pos(self, y[1])) for y in x]
         return pos_wordnet(pos_lambda(tokens))
 
     def getLemmas(self, speech_parts):        
