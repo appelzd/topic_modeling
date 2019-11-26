@@ -65,10 +65,10 @@ class PreprocessorTest(unittest.TestCase):
     
 
     # bigrams is not working right now
-    # def test_getbigramlist_returnslistinproperformat(self):
-    #     results = PlainTextPreprocessor.getbigramlist(PlainTextPreprocessor, self.text)
+    def test_getbigramlist_returnslistinproperformat(self):
+        results = PlainTextPreprocessor.getbigramlist(PlainTextPreprocessor, self.text)
         
-    #     self.assertIn( ('add','which') ,results)    
+        self.assertIn(('which', 'given') ,results)    
     
 
 

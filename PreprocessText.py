@@ -76,12 +76,12 @@ class PlainTextPreprocessor:
         #foreach sentence, create bigram matrix with nltk.ngram
         bigramsList = []
         for sent in sentences:
-            for tup in sent.lower().split():
-                big = list(ngrams(tup,2))
-                kf = None
-            #bigramsList.append(list([ ]))
-        
-        return None #bigramsList
+            cleaned_sent = re.sub('[%s]' % re.escape(string.punctuation  + '£' + 'ï' + '»' + '¿'), ' ', sent)
+            split_sent = cleaned_sent.lower().split()
+            temp = list(ngrams(split_sent,2))
+            [bigramsList.append(t) for t in temp]
+            
+        return bigramsList
         
     def getngrams(self, data):
         
