@@ -1,7 +1,8 @@
 class Configuration:
     @staticmethod
     def GetBlobContainerName():
-        return 'chaucer'
+        #return 'chaucer'
+        return 'test'
     
     @staticmethod
     def GetDbConnectionString():
@@ -15,4 +16,9 @@ class Configuration:
     @staticmethod
     def GetAzureBlobKey():
         return 'XcdfPfvBQVgt0g+h3voFQ7ySystcnrJTsEQc73clWmsWuSzFFw6b5v89pO6idc7JyyUlefvC6bIV9QABluMBhA=='
+
+    @staticmethod
+    def GetPickleRoot():
+        return ''
+
     

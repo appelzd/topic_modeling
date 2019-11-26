@@ -11,9 +11,14 @@ class BlobRepo:
             blobs = block_blob_service.list_blobs(Configuration.GetBlobContainerName())
 
             for b in blobs:
-                print(b.name)
-                bt = block_blob_service.get_blob_to_text(Configuration.GetBlobContainerName(), b.name)
-                yield bt.content
-
+                try:
+                    print(b.name)
+                    bt = block_blob_service.get_blob_to_text(Configuration.GetBlobContainerName(), b.name)
+                    yield bt.content
+                except Exception as ex:
+                    print('failed opening docs')
+                    print(ex)
+                    continue
         except Exception as e:
+            print('Failed retrieving docs')
             print(e)
