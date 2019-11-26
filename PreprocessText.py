@@ -16,9 +16,6 @@ nltk.download('stopwords')
 nltk.download('averaged_perceptron_tagger')
 nltk.download('wordnet')
 
-# model=word2vec.KeyedVectors.load_word2vec_format('GoogleNews-vectors-negative300.bin.gz', binary=True)  
-# i2w = model.wv.index2word
-
 class PlainTextPreprocessor:
 
     def get_wordnet_pos(self, treebank_tag):
