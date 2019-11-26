@@ -64,12 +64,20 @@ class PreprocessorTest(unittest.TestCase):
         self.assertNotIn(['and', 'a'], results, 'contains stopwords')
     
 
-    # bigrams is not working right now
     def test_getbigramlist_returnslistinproperformat(self):
-        results = PlainTextPreprocessor.getbigramlist(PlainTextPreprocessor, self.text)
+        results = PlainTextPreprocessor.getBigramList(PlainTextPreprocessor, self.text)
         
         self.assertIn(('which', 'given') ,results)    
     
+    def test_getbigram_returns(self):
+        tokens = PlainTextPreprocessor.getBigramList(PlainTextPreprocessor, self.text)
+        
+        trained_bigram_model = ['which_given', 'lake_michigan', 'nltk_methods']
+        results = PlainTextPreprocessor.getNGrams(PlainTextPreprocessor, tokens, trained_bigram_model)
+
+        self.assertIn(('which_given') ,results)    
+        self.assertIn(('nltk_methods') ,results)    
+        self.assertNotIn(('lake_michigan'), results)
 
 
 if __name__ == "__main__":

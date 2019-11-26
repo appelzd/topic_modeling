@@ -69,7 +69,7 @@ class PlainTextPreprocessor:
         
         return(lemmas)
 
-    def getbigramlist(self,data):
+    def getBigramList(self,data):
         #for now, we are just getting bigrams (2 word phrases)
         #get sentences
         sentences = sent_tokenize(data)
@@ -80,18 +80,19 @@ class PlainTextPreprocessor:
             split_sent = cleaned_sent.lower().split()
             temp = list(ngrams(split_sent,2))
             [bigramsList.append(t) for t in temp]
-            
+
         return bigramsList
         
-    def getngrams(self, data):
+    def getNGrams(self, data, trained_bigram_model):
         
         #foreach bigram in bigram matrix
         #compare to our model to see if the biagram is a 'valid' phrase
         #if the phrase is valid, add it to the dictionary of terms
         rtn = []
-        for gen in ngramslist:
-            bg = [ '%s_%s' % (b[0], b[1]) for b in gen]
-            rtn.append([word for word in i2w for w in bg if word.lower()==w])
+        for gen in data:
+            bg = '%s_%s' % (gen[0], gen[1])
+            result = (list(filter( lambda d: d==bg, trained_bigram_model)))
+            [rtn.append(r) for r in result if len(result) > 0]
 
         return rtn
 
