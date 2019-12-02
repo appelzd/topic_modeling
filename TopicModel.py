@@ -5,25 +5,32 @@ import gensim.models.keyedvectors as word2vec
 import blobRepo
 import Db
 from PreprocessText import PlainTextPreprocessor
+from bigram_model_repo import bigram_model_repo
 
-model=word2vec.KeyedVectors.load_word2vec_format('GoogleNews-vectors-negative300.bin.gz', binary=True)  
-i2w = model.wv.index2word
+# model=word2vec.KeyedVectors.load_word2vec_format('GoogleNews-vectors-negative300.bin.gz', binary=True)  
+# i2w = model.wv.index2word
 
 def identify_topics(num_topics=5, no_below=3, no_above=.34, passes=50):
     #create topics based on lemma lists created from whole files
     
-    trained_bigram_model = gettrained_bigram_model()
+    #seriaize
+    blob = blobRepo.BlobRepo()
+    preprocess = PlainTextPreprocessor()
+    bigram_repo = bigram_model_repo()
 
     lemmas = []
-    for datafile in blobRepo.BlobRepo.GetBlobs(blobRepo.BlobRepo):
+    for datafile in blob.GetBlobs():
         try:
             #get the tokens and bigrams
-            tokens = PlainTextPreprocessor.getTokens(PlainTextPreprocessor, datafile)
-            tokens_and_bigrams = PlainTextPreprocessor.getNGrams(PlainTextPreprocessor, PlainTextPreprocessor.getBigramList(PlainTextPreprocessor, tokens), trained_bigram_model)
+            tokens = preprocess.getTokens( datafile)
+            tokens_and_bigrams = preprocess.getNGrams(preprocess.getBigramList(datafile), bigram_repo.getBigramModel())
 
             #clean up the tokens
-            #we leave the bigrams, b/c they are unlikely to be in the stop word list and this will speed it up
-            lemmas.append()                
+            tokens = preprocess.removeStopWords(tokens)
+            lemmas = preprocess.getLemmas(preprocess.getPartsofSpeech(tokens))
+
+            #we leave the bigrams, b/c they are unlikely to be in the stop word list and this will speed it u
+            lemmas.append(tokens_and_bigrams)                
         except Exception as e :
             print(e)
             continue
@@ -32,7 +39,7 @@ def identify_topics(num_topics=5, no_below=3, no_above=.34, passes=50):
     dictionary = gensim.corpora.Dictionary(lemmas)
     #dictionary.append(getbigram(lemmas))
     dictionary.filter_extremes(no_below=no_below, 
-                               no_above=no_above)
+                               no_above=no_above) 
     
     #Use dictionary to form bag of words
     bow_corpus = [dictionary.doc2bow(doc) for doc in lemmas]
@@ -48,9 +55,18 @@ def identify_topics(num_topics=5, no_below=3, no_above=.34, passes=50):
     return(lda_model_tfidf, dictionary)
 
 #todo need to move this to factory so we can have custom models for bigrams
-def gettrained_bigram_model():
-    raw_list = list(filter(lambda s: '_' in s, i2w ))
-    return [tup for tup in raw_list if len(tup)> 0]
+# def gettrained_bigram_model():
+#     raw_list = list(filter(lambda s: '_' in s, i2w ))
+#     return [tup for tup in raw_list if len(raw_list)> 0]
 
 if __name__ == "__main__":
-    identify_topics(num_topics=20, no_above=.95, no_below=.25)
+    lda_model, dictionary = identify_topics(num_topics=20, no_above=.95, no_below=.25)
+
+    for idx, topic in lda_model.print_topics(-1):
+        print("Topic: {} ".format(idx))
+        print("Word: {} ".format(topic))
+        print("\n")
+        #writeToDb(topic)
+        
+    for tp in topic_prediction:
+        print('Test file likely to be topic {}, probability = {:.4f}'.format(tp[0][0], tp[0][1]))

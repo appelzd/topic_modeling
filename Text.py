@@ -29,35 +29,35 @@ from PreprocessText import PlainTextPreprocessor
 # i2w = model.wv.index2word
         
 
-def identify_topics(num_topics=5, no_below=3, no_above=.34, passes=50):
-    #create topics based on lemma lists created from whole files
+# def identify_topics(num_topics=5, no_below=3, no_above=.34, passes=50):
+#     #create topics based on lemma lists created from whole files
     
-    lemmas = []
-    for datafile in blobRepo.BlobRepo.GetBlobs(blobRepo.BlobRepo):
-        try:
-            lemmas.append(create_lemmas_from_file(datafile))                
-        except Exception as e :
-            print(e)
-            continue
+#     lemmas = []
+#     for datafile in blobRepo.BlobRepo.GetBlobs(blobRepo.BlobRepo):
+#         try:
+#             lemmas.append(create_lemmas_from_file(datafile))                
+#         except Exception as e :
+#             print(e)
+#             continue
 
-    #create and filter dictionary
-    dictionary = gensim.corpora.Dictionary(lemmas)
-    #dictionary.append(getbigram(lemmas))
-    dictionary.filter_extremes(no_below=no_below, 
-                               no_above=no_above)
+#     #create and filter dictionary
+#     dictionary = gensim.corpora.Dictionary(lemmas)
+#     #dictionary.append(getbigram(lemmas))
+#     dictionary.filter_extremes(no_below=no_below, 
+#                                no_above=no_above)
     
-    #Use dictionary to form bag of words
-    bow_corpus = [dictionary.doc2bow(doc) for doc in lemmas]
+#     #Use dictionary to form bag of words
+#     bow_corpus = [dictionary.doc2bow(doc) for doc in lemmas]
     
-    #Fit tfidf model
-    tfidf = gensim.models.TfidfModel(bow_corpus)
-    corpus_tfidf = tfidf[bow_corpus]
-    lda_model_tfidf = gensim.models.LsiModel(corpus_tfidf, 
-                                             #num_topics=num_topics, 
-                                             id2word = dictionary 
-                                             #passes = passes
-                                             )
-    return(lda_model_tfidf, dictionary)
+#     #Fit tfidf model
+#     tfidf = gensim.models.TfidfModel(bow_corpus)
+#     corpus_tfidf = tfidf[bow_corpus]
+#     lda_model_tfidf = gensim.models.LsiModel(corpus_tfidf, 
+#                                              #num_topics=num_topics, 
+#                                              id2word = dictionary 
+#                                              #passes = passes
+#                                              )
+#     return(lda_model_tfidf, dictionary)
 
 def fit_new_doc(docfile, lda_model, dictionary):
     lemmas = create_lemmas_from_file(docfile)
@@ -79,10 +79,10 @@ if __name__ == '__main__':
         print("Topic: {} ".format(idx))
         print("Word: {} ".format(topic))
         print("\n")
-        writeToDb(topic)
+        #writeToDb(topic)
         
-    # for tp in topic_prediction:
-    #     print('Test file likely to be topic {}, probability = {:.4f}'.format(tp[0][0], tp[0][1]))
+    for tp in topic_prediction:
+        print('Test file likely to be topic {}, probability = {:.4f}'.format(tp[0][0], tp[0][1]))
     
     
 

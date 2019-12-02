@@ -28,8 +28,11 @@ class PickleRepo:
     def GetPickledDoc(self, documentId, target=None):
         path = self.GetPath(target)
 
-        with open(os.path.join(path, str(documentId)), 'rb') as f:
-            return pickle.load(f)
+        if not os.path.exists(os.path.join(path, str(documentId))):
+            return None
+        else:    
+            with open(os.path.join(path, str(documentId)), 'rb') as f:
+                return pickle.load(f)
 
 
     def GetPath(self,target=None):

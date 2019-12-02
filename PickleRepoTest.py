@@ -12,7 +12,7 @@ class TestPickleRepo(unittest.TestCase):
     def test_saveAsPickle(self):
         try:
             repo = PickleRepo()
-            repo.SaveAsPickle(self.testDoc, self.documentId, self.target)
+            repo.SaveAsPickle(repo, self.documentId, self.target)
             self.assertTrue(1==1)
         except Exception as e:
             self.assertIsNone(e)
