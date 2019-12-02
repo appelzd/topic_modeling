@@ -19,6 +19,6 @@ class Configuration:
 
     @staticmethod
     def GetPickleRoot():
-        return ''
+        return './test_pickles'
 
     

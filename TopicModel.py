@@ -54,11 +54,6 @@ def identify_topics(num_topics=5, no_below=3, no_above=.34, passes=50):
                                              )
     return(lda_model_tfidf, dictionary)
 
-#todo need to move this to factory so we can have custom models for bigrams
-# def gettrained_bigram_model():
-#     raw_list = list(filter(lambda s: '_' in s, i2w ))
-#     return [tup for tup in raw_list if len(raw_list)> 0]
-
 if __name__ == "__main__":
     lda_model, dictionary = identify_topics(num_topics=20, no_above=.95, no_below=.25)
 

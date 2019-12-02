@@ -1,6 +1,7 @@
 import gensim
 import gensim.models.keyedvectors as word2vec
 
+import config
 from PickleRepository import PickleRepo
 
 class bigram_model_repo:
@@ -10,7 +11,9 @@ class bigram_model_repo:
 
     def getBigramModel(self):
         pickler = PickleRepo()
-
+        _config = config.Configuration()
+        target = _config.GetPickleRoot()
+        
         model = pickler.GetPickledDoc(self.modelId, self.target)
 
         if model is not None:
@@ -23,7 +26,7 @@ class bigram_model_repo:
             return model
   
     #todo need to move this to factory so we can have custom models for bigrams
-    def gettrained_bigram_model(i2w):
+    def gettrained_bigram_model(self, i2w):
         raw_list = list(filter(lambda s: '_' in s, i2w ))
         return [tup for tup in raw_list if len(raw_list)> 0]
 
