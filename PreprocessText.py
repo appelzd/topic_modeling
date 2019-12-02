@@ -66,19 +66,6 @@ class PlainTextPreprocessor:
         
         return(lemmas)
 
-    def getBigramList(self,data):
-        #for now, we are just getting bigrams (2 word phrases)
-        #get sentences
-        sentences = sent_tokenize(data)
-        #foreach sentence, create bigram matrix with nltk.ngram
-        bigramsList = []
-        for sent in sentences:
-            cleaned_sent = re.sub('[%s]' % re.escape(string.punctuation  + '£' + 'ï' + '»' + '¿'), ' ', sent)
-            split_sent = cleaned_sent.lower().split()
-            temp = list(ngrams(split_sent,2))
-            [bigramsList.append(t) for t in temp]
-
-        return bigramsList
         
     def getNGrams(self, data, trained_bigram_model):
         

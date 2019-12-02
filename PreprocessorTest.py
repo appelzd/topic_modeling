@@ -2,6 +2,7 @@ import unittest
 import nltk
 from nltk.corpus import wordnet
 from  PreprocessText import PlainTextPreprocessor
+from bigram_model_repo import bigram_model_repo as bigRepo
 
 nltk.download('averaged_perceptron_tagger')
 nltk.download('wordnet')
@@ -65,12 +66,14 @@ class PreprocessorTest(unittest.TestCase):
     
 
     def test_getbigramlist_returnslistinproperformat(self):
-        results = PlainTextPreprocessor.getBigramList(PlainTextPreprocessor, self.text)
+        repo = bigRepo()
+        results = repo.getBigramList(self.text, [])
         
         self.assertIn(('which', 'given') ,results)    
     
     def test_getbigram_returns(self):
-        tokens = PlainTextPreprocessor.getBigramList(PlainTextPreprocessor, self.text)
+        repo = bigRepo()
+        tokens = repo.getBigramList(self.text, [])
         
         trained_bigram_model = ['which_given', 'lake_michigan', 'nltk_methods']
         results = PlainTextPreprocessor.getNGrams(PlainTextPreprocessor, tokens, trained_bigram_model)

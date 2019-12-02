@@ -17,19 +17,20 @@ def identify_topics(num_topics=5, no_below=3, no_above=.34, passes=50):
     blob = blobRepo.BlobRepo()
     preprocess = PlainTextPreprocessor()
     bigram_repo = bigram_model_repo()
+    bigram_model = bigram_repo.getBigramModel()
 
     lemmas = []
     for datafile in blob.GetBlobs():
         try:
             #get the tokens and bigrams
             tokens = preprocess.getTokens( datafile)
-            tokens_and_bigrams = preprocess.getNGrams(preprocess.getBigramList(datafile), bigram_repo.getBigramModel())
+            tokens = preprocess.removeStopWords(tokens)
+           
+            tokens_and_bigrams = preprocess.getNGrams(bigram_repo.getBigramList(datafile, bigram_model), bigram_model)
 
             #clean up the tokens
-            tokens = preprocess.removeStopWords(tokens)
             lemmas = preprocess.getLemmas(preprocess.getPartsofSpeech(tokens))
 
-            #we leave the bigrams, b/c they are unlikely to be in the stop word list and this will speed it u
             lemmas.append(tokens_and_bigrams)                
         except Exception as e :
             print(e)
