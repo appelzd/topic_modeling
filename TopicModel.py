@@ -28,9 +28,8 @@ def identify_topics(num_topics=5, no_below=3, no_above=.34, passes=50):
            
             tokens_and_bigrams = preprocess.getNGrams(bigram_repo.getBigramList(datafile), bigram_model)
 
-            #clean up the tokens
-            lemmas = preprocess.getLemmas(preprocess.getPartsofSpeech(tokens))
-
+            #append to the lemma list
+            [lemmas.append(l) for l in preprocess.getLemmas(preprocess.getPartsofSpeech(tokens))]
             [lemmas.append(tb) for tb in tokens_and_bigrams]                
         except Exception as e :
             print(e)
@@ -62,7 +61,7 @@ if __name__ == "__main__":
         print("Topic: {} ".format(idx))
         print("Word: {} ".format(topic))
         print("\n")
-        #writeToDb(topic)
+        writeToDb(topic)
         
     for tp in topic_prediction:
         print('Test file likely to be topic {}, probability = {:.4f}'.format(tp[0][0], tp[0][1]))
