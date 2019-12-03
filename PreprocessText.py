@@ -55,14 +55,14 @@ class PlainTextPreprocessor:
     def getPartsofSpeech(self, tokens):
         #Part of Speech
         pos_lambda = lambda x: nltk.pos_tag(x)
-        pos_wordnet = lambda x: [(y[0], self.get_wordnet_pos(self, y[1])) for y in x]
+        pos_wordnet = lambda x: [(y[0], self.get_wordnet_pos(y[1])) for y in x]
         return pos_wordnet(pos_lambda(tokens))
 
     def getLemmas(self, speech_parts):        
         #Lemmatization
         lemmatizer = WordNetLemmatizer()
         lemmatizer_fun = lambda x: lemmatizer.lemmatize(*x)
-        lemmas = [lemmatizer_fun(x) for x in speech_parts]
+        lemmas = [lemmatizer_fun(x) for x in speech_parts if x[1] is not None]
         
         return(lemmas)
 
@@ -74,9 +74,10 @@ class PlainTextPreprocessor:
         #if the phrase is valid, add it to the dictionary of terms
         rtn = []
         for gen in data:
-            bg = '%s_%s' % (gen[0], gen[1])
-            result = (list(filter( lambda d: d==bg, trained_bigram_model)))
-            [rtn.append(r) for r in result if len(result) > 0]
+            # bg = '%s_%s' % (gen[0], gen[1])
+            # result = (list(filter( lambda d: d==bg, trained_bigram_model)))
+            # [rtn.append(r) for r in result if len(result) > 0]
+            rtn.append('%s_%s' % (gen[0], gen[1]))
 
         return rtn
 

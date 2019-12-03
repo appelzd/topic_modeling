@@ -26,12 +26,12 @@ def identify_topics(num_topics=5, no_below=3, no_above=.34, passes=50):
             tokens = preprocess.getTokens( datafile)
             tokens = preprocess.removeStopWords(tokens)
            
-            tokens_and_bigrams = preprocess.getNGrams(bigram_repo.getBigramList(datafile, bigram_model), bigram_model)
+            tokens_and_bigrams = preprocess.getNGrams(bigram_repo.getBigramList(datafile), bigram_model)
 
             #clean up the tokens
             lemmas = preprocess.getLemmas(preprocess.getPartsofSpeech(tokens))
 
-            lemmas.append(tokens_and_bigrams)                
+            [lemmas.append(tb) for tb in tokens_and_bigrams]                
         except Exception as e :
             print(e)
             continue
