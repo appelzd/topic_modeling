@@ -1,3 +1,4 @@
 __pycache__/
 GoogleNews-vectors-negative300.bin.gz
 test_pickles/
+sql-scripts/
